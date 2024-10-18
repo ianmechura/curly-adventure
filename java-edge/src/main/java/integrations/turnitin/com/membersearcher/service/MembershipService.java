@@ -1,19 +1,14 @@
 package integrations.turnitin.com.membersearcher.service;
 
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import integrations.turnitin.com.membersearcher.client.MembershipBackendClient;
-import integrations.turnitin.com.membersearcher.model.Membership;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
-
 import integrations.turnitin.com.membersearcher.model.User;
-import integrations.turnitin.com.membersearcher.model.UserList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 @Service
 public class MembershipService {
@@ -30,9 +25,9 @@ public class MembershipService {
      */
     public CompletableFuture<MembershipList> fetchAllMembershipsWithUsers() {
 
-        CompletableFuture<Map<String, User>> fetchAndMapUsersFuture =
+        CompletableFuture<ConcurrentMap<String, User>> fetchAndMapUsersFuture =
                 membershipBackendClient.fetchUsers()
-                        .thenApply(users -> users.getUsers().stream().collect(Collectors.toMap(User::getId, u -> u)));
+                        .thenApply(users -> users.getUsers().stream().collect(Collectors.toConcurrentMap(User::getId, u -> u)));
 
         return membershipBackendClient.fetchMemberships().thenCombine(fetchAndMapUsersFuture, (memberList, userMap) -> {
             memberList.getMemberships().stream().map(membership ->
