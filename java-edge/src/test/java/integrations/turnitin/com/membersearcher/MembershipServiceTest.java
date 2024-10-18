@@ -8,6 +8,7 @@ import integrations.turnitin.com.membersearcher.client.MembershipBackendClient;
 import integrations.turnitin.com.membersearcher.model.Membership;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
 import integrations.turnitin.com.membersearcher.model.User;
+import integrations.turnitin.com.membersearcher.model.UserList;
 import integrations.turnitin.com.membersearcher.service.MembershipService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,52 +22,59 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MembershipServiceTest {
-	@InjectMocks
-	private MembershipService membershipService;
+    @InjectMocks
+    private MembershipService membershipService;
 
-	@Mock
-	private MembershipBackendClient membershipBackendClient;
+    @Mock
+    private MembershipBackendClient membershipBackendClient;
 
-	@Mock
-	private ObjectMapper objectMapper;
+    @Mock
+    private ObjectMapper objectMapper;
 
-	private MembershipList members;
+    private MembershipList members;
 
-	private User userOne;
+    private UserList users;
 
-	private User userTwo;
 
-	@BeforeEach
-	public void init() {
-		members = new MembershipList()
-				.setMemberships(List.of(
-						new Membership()
-								.setId("a")
-								.setRole("instructor")
-								.setUserId("1"),
-						new Membership()
-								.setId("b")
-								.setRole("student")
-								.setUserId("2")
-				));
-		userOne = new User()
-				.setId("1")
-				.setName("test one")
-				.setEmail("test1@example.com");
-		userTwo = new User()
-				.setId("2")
-				.setName("test two")
-				.setEmail("test2@example.com");
-		when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
-		when(membershipBackendClient.fetchUser("1")).thenReturn(CompletableFuture.completedFuture(userOne));
-		when(membershipBackendClient.fetchUser("2")).thenReturn(CompletableFuture.completedFuture(userTwo));
-	}
+    private User userOne;
 
-	@Test
-	public void TestFetchAllMemberships() throws Exception {
+    private User userTwo;
 
-		MembershipList members = membershipService.fetchAllMembershipsWithUsers().get();
-		assertThat(members.getMemberships().get(0).getUser()).isEqualTo(userOne);
-		assertThat(members.getMemberships().get(1).getUser()).isEqualTo(userTwo);
-	}
+    @BeforeEach
+    public void init() {
+        members = new MembershipList()
+                .setMemberships(List.of(
+                        new Membership()
+                                .setId("a")
+                                .setRole("instructor")
+                                .setUserId("1"),
+                        new Membership()
+                                .setId("b")
+                                .setRole("student")
+                                .setUserId("2")
+                ));
+
+
+        userOne = new User()
+                .setId("1")
+                .setName("test one")
+                .setEmail("test1@example.com");
+        userTwo = new User()
+                .setId("2")
+                .setName("test two")
+                .setEmail("test2@example.com");
+
+        users = new UserList().setUsers(List.of(userOne, userTwo));
+
+        when(membershipBackendClient.fetchUsers()).thenReturn(CompletableFuture.completedFuture(users));
+        when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
+    }
+
+    @Test
+    public void TestFetchAllMemberships() throws Exception {
+
+        MembershipList members = membershipService.fetchAllMembershipsWithUsers().get();
+        assertThat(members.getMemberships().get(0).getUser()).isEqualTo(userOne);
+        assertThat(members.getMemberships().get(1).getUser()).isEqualTo(userTwo);
+    }
 }
