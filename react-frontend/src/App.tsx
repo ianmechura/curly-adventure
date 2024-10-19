@@ -45,7 +45,7 @@ const App: FC<any> = () => {
                   <th></th>
                 </tr>
               </thead>
-              <tbody data-testid='search-results2'>
+              <tbody>
 
                   { memberships.filter(membership => !search
                     || membership.user?.name.toLowerCase().includes(search.toLowerCase())
