@@ -1,0 +1,42 @@
+
+import { render, screen } from '@testing-library/react';
+import App from '../App';
+import { act } from 'react';
+
+// Note I worked on this for some time but I don't have any experience writing automated user interface tests the time investment
+// to complete these tests would have been significant.
+
+beforeAll(() => {
+   global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(
+            [
+                { id: '1', user: { name: 'Jim Morrison', email: 'jmorrison@thedoors.com' } },
+                { id: '2', user: { name: 'David Gilmour', email: 'dave@pinkfloyd.co.uk' } },
+                { id: '3', user: { name: 'Jimmy Hendrix', email: 'jh@hendrixexp.com' } }
+            ]
+        ),
+      })
+    );
+});
+
+test('Search by lowercase', async () => {
+    //Dont have the time available to learn this right now.
+    render(<App/>);
+
+    });
+})
+
+test('Search by uppercase', async () => {
+    //Dont have the time available to learn this right now.
+    render(<App/>);
+
+    });
+})
+
+test('Search by mixed case', async () => {
+    //Dont have the time available to learn this right now.
+    render(<App/>);
+
+    });
+})

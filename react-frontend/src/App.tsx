@@ -45,12 +45,13 @@ const App: FC<any> = () => {
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody data-testid='search-results2'>
+
                   { memberships.filter(membership => !search
                     || membership.user?.name.toLowerCase().includes(search.toLowerCase())
-                    || membership.user?.email.includes(search))
+                    || membership.user?.email.toLowerCase().includes(search.toLowerCase()))
                     .map(membership => (
-                      <tr key={membership.id}>
+                      <tr data-testid='search-results' ey={membership.id}>
                         <td>{membership.user?.name}</td>
                         <td>{membership.user?.email}</td>
                         <td>
